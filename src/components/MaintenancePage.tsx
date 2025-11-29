@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Github, Linkedin } from 'lucide-react';
 
 // ========== ANIMATED GRID BACKGROUND ==========
@@ -169,6 +169,8 @@ function LiveClock() {
 // ========== MAIN MAINTENANCE PAGE ==========
 export default function MaintenancePage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showAchievement, setShowAchievement] = useState(false);
+  const [hasTriggeredAchievement, setHasTriggeredAchievement] = useState(false);
   const cubeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -182,18 +184,74 @@ export default function MaintenancePage() {
           e.clientY <= rect.bottom;
 
         setIsDarkMode(isInside);
+
+        // Trigger achievement notification on first dark mode entry
+        if (isInside && !hasTriggeredAchievement) {
+          setShowAchievement(true);
+          setHasTriggeredAchievement(true);
+
+          // Hide achievement after 3 seconds
+          setTimeout(() => {
+            setShowAchievement(false);
+          }, 3000);
+        }
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [hasTriggeredAchievement]);
 
   return (
     <div className={`min-h-screen relative flex items-center justify-center overflow-hidden transition-colors duration-700 ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Animated Background Elements */}
       <AnimatedGrid />
       <RotatingCube cubeRef={cubeRef} isDarkMode={isDarkMode} />
+
+      {/* Achievement Notification */}
+      <AnimatePresence>
+        {showAchievement && (
+          <motion.div
+            className="fixed top-8 right-8 z-50"
+            initial={{ x: 400, opacity: 0, scale: 0.8 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: 400, opacity: 0, scale: 0.8 }}
+            transition={{
+              type: "spring",
+              stiffness: 200,
+              damping: 20,
+              duration: 0.6,
+            }}
+          >
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute inset-0 blur-xl rounded-lg bg-black/10" />
+
+              {/* Main notification card */}
+              <div className="relative px-4 py-2 border backdrop-blur-sm bg-white/90 border-black text-black">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    className="text-xl font-bold"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: [0, 1.3, 1] }}
+                    transition={{ delay: 0.3, duration: 0.5, times: [0, 0.6, 1] }}
+                  >
+                    +1
+                  </motion.div>
+                  <motion.div
+                    className="text-sm font-medium tracking-wide"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                  >
+                    for curiosity
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-6xl mx-auto px-8 py-16">
