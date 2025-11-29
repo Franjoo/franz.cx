@@ -170,8 +170,10 @@ function LiveClock() {
 export default function MaintenancePage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showAchievement, setShowAchievement] = useState(false);
+  const [darkModeEntryCount, setDarkModeEntryCount] = useState(0);
   const [hasTriggeredAchievement, setHasTriggeredAchievement] = useState(false);
   const cubeRef = useRef<HTMLDivElement>(null);
+  const wasInDarkModeRef = useRef(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -185,22 +187,31 @@ export default function MaintenancePage() {
 
         setIsDarkMode(isInside);
 
-        // Trigger achievement notification on first dark mode entry
-        if (isInside && !hasTriggeredAchievement) {
-          setShowAchievement(true);
-          setHasTriggeredAchievement(true);
+        // Track dark mode entries
+        if (isInside && !wasInDarkModeRef.current) {
+          wasInDarkModeRef.current = true;
+          const newCount = darkModeEntryCount + 1;
+          setDarkModeEntryCount(newCount);
 
-          // Hide achievement after 3 seconds
-          setTimeout(() => {
-            setShowAchievement(false);
-          }, 3000);
+          // Trigger achievement notification on 3rd dark mode entry
+          if (newCount === 3 && !hasTriggeredAchievement) {
+            setShowAchievement(true);
+            setHasTriggeredAchievement(true);
+
+            // Hide achievement after 3 seconds
+            setTimeout(() => {
+              setShowAchievement(false);
+            }, 3000);
+          }
+        } else if (!isInside && wasInDarkModeRef.current) {
+          wasInDarkModeRef.current = false;
         }
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [hasTriggeredAchievement]);
+  }, [darkModeEntryCount, hasTriggeredAchievement]);
 
   return (
     <div className={`min-h-screen relative flex items-center justify-center overflow-hidden transition-colors duration-700 ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
