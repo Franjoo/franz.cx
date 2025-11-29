@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin } from 'lucide-react';
 
 // ========== ANIMATED GRID BACKGROUND ==========
@@ -42,60 +42,30 @@ function AnimatedGrid() {
 }
 
 // ========== ROTATING GEOMETRIC SHAPE ==========
-function RotatingCube() {
+function RotatingCube({ cubeRef, isDarkMode }: { cubeRef: React.RefObject<HTMLDivElement | null>; isDarkMode: boolean }) {
+  const rotationVariants = {
+    light: { rotate: 360 },
+    dark: { rotate: -360 }
+  };
+
   return (
-    <motion.div
-      className="absolute top-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 opacity-20"
-      animate={{
-        rotate: 360,
-      }}
-      transition={{
-        duration: 20,
-        repeat: Infinity,
-        ease: 'linear',
-      }}
+    <div
+      ref={cubeRef}
+      className="absolute top-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 cursor-pointer"
     >
-      <div className="w-full h-full border-2 border-current transform rotate-45" />
-      <div className="absolute inset-0 w-full h-full border-2 border-current transform -rotate-45" />
-    </motion.div>
-  );
-}
-
-// ========== FLOATING PARTICLES ==========
-function FloatingParticles() {
-  const particles = [...Array(15)].map((_, i) => ({
-    id: i,
-    size: Math.random() * 6 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 10,
-    delay: Math.random() * 5,
-  }));
-
-  return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute bg-current rounded-full opacity-30"
-          style={{
-            width: particle.size,
-            height: particle.size,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-          }}
-          animate={{
-            y: [0, -30, 0],
-            opacity: [0.1, 0.3, 0.1],
-          }}
-          transition={{
-            duration: particle.duration,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
+      <motion.div
+        className="w-full h-full opacity-20 pointer-events-none"
+        variants={rotationVariants}
+        animate={isDarkMode ? "dark" : "light"}
+        transition={{
+          duration: isDarkMode ? 6.67 : 20,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      >
+        <div className="w-full h-full border-2 border-current transform rotate-45" />
+        <div className="absolute inset-0 w-full h-full border-2 border-current transform -rotate-45" />
+      </motion.div>
     </div>
   );
 }
@@ -198,12 +168,32 @@ function LiveClock() {
 
 // ========== MAIN MAINTENANCE PAGE ==========
 export default function MaintenancePage() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const cubeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cubeRef.current) {
+        const rect = cubeRef.current.getBoundingClientRect();
+        const isInside =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+
+        setIsDarkMode(isInside);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white text-black relative flex items-center justify-center overflow-hidden">
+    <div className={`min-h-screen relative flex items-center justify-center overflow-hidden transition-colors duration-700 ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Animated Background Elements */}
       <AnimatedGrid />
-      <FloatingParticles />
-      <RotatingCube />
+      <RotatingCube cubeRef={cubeRef} isDarkMode={isDarkMode} />
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-6xl mx-auto px-8 py-16">
@@ -262,7 +252,7 @@ export default function MaintenancePage() {
               href="https://github.com/Franjoo"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
+              className={`w-12 h-12 border-2 border-current flex items-center justify-center transition-colors duration-300 ${isDarkMode ? 'hover:bg-white hover:border-black hover:text-black' : 'hover:bg-black hover:border-white hover:text-white'}`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -272,7 +262,7 @@ export default function MaintenancePage() {
               href="https://www.linkedin.com/in/franz-benthin/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
+              className={`w-12 h-12 border-2 border-current flex items-center justify-center transition-colors duration-300 ${isDarkMode ? 'hover:bg-white hover:border-black hover:text-black' : 'hover:bg-black hover:border-white hover:text-white'}`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -280,7 +270,7 @@ export default function MaintenancePage() {
             </motion.a>
             <motion.a
               href="mailto:hi@franz.cx"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
+              className={`w-12 h-12 border-2 border-current flex items-center justify-center transition-colors duration-300 ${isDarkMode ? 'hover:bg-white hover:border-black hover:text-black' : 'hover:bg-black hover:border-white hover:text-white'}`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -297,12 +287,22 @@ export default function MaintenancePage() {
           >
             ESTIMATED LAUNCH · Q1 2026
           </motion.div>
+
+          {/* Copyright Notice */}
+          <motion.div
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs tracking-wide opacity-25 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.25 }}
+            transition={{ delay: 4, duration: 0.8 }}
+          >
+            © 2025 Franz Benthin
+          </motion.div>
         </div>
       </div>
 
       {/* Animated Corner Element */}
       <motion.div
-        className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 opacity-10"
+        className="hidden md:block absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 opacity-10"
         initial={{ x: -200, y: 200 }}
         animate={{ x: 0, y: 0 }}
         transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
@@ -311,7 +311,7 @@ export default function MaintenancePage() {
       </motion.div>
 
       <motion.div
-        className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 opacity-10"
+        className="hidden md:block absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 opacity-10"
         initial={{ x: 200, y: -200 }}
         animate={{ x: 0, y: 0 }}
         transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
