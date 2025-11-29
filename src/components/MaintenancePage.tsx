@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Github, Linkedin, ArrowRight } from 'lucide-react';
+import { Mail, Github, Linkedin } from 'lucide-react';
 
 // ========== ANIMATED GRID BACKGROUND ==========
 function AnimatedGrid() {
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-10">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-[0.015]">
       {/* Vertical Lines */}
       {[...Array(20)].map((_, i) => (
         <motion.div
@@ -171,80 +171,6 @@ function ProgressBar() {
   );
 }
 
-// ========== EMAIL NOTIFY FORM ==========
-function NotifyForm() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [focused, setFocused] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      // Here you would typically send to your backend
-      console.log('Email submitted:', email);
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setEmail('');
-      }, 3000);
-    }
-  };
-
-  return (
-    <div className="w-full max-w-md">
-      <AnimatePresence mode="wait">
-        {submitted ? (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="text-center py-4"
-          >
-            <div className="text-lg tracking-wide">THANKS! WE'LL NOTIFY YOU.</div>
-          </motion.div>
-        ) : (
-          <motion.form
-            key="form"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            onSubmit={handleSubmit}
-            className="relative"
-          >
-            <div className="relative">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                placeholder="your.email@example.com"
-                required
-                className="w-full bg-transparent border-2 border-current px-6 py-4 text-lg tracking-wide placeholder:opacity-30 focus:outline-none transition-all duration-300"
-                style={{
-                  borderColor: focused ? 'currentColor' : 'rgba(0,0,0,0.2)',
-                }}
-              />
-              <motion.button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-3 border-2 border-current hover:bg-current hover:text-white transition-colors duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-            <div className="mt-2 text-sm opacity-50 tracking-wide">
-              Get notified when we launch
-            </div>
-          </motion.form>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 // ========== LIVE CLOCK ==========
 function LiveClock() {
   const [time, setTime] = useState('');
@@ -265,7 +191,7 @@ function LiveClock() {
 
   return (
     <div className="text-sm tracking-[0.3em] opacity-50 font-mono">
-      ZURICH · {time}
+      BERLIN · {time}
     </div>
   );
 }
@@ -310,7 +236,7 @@ export default function MaintenancePage() {
             >
               Building a digital experience that deserves your attention.
               <span className="block mt-4 text-lg opacity-50">
-                Quality takes time. Excellence takes longer.
+                Worth the wait.
               </span>
             </motion.p>
           </div>
@@ -325,15 +251,6 @@ export default function MaintenancePage() {
             <ProgressBar />
           </motion.div>
 
-          {/* Email Notify Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.5, duration: 0.8 }}
-          >
-            <NotifyForm />
-          </motion.div>
-
           {/* Social Links */}
           <motion.div
             className="flex gap-6 pt-8"
@@ -342,28 +259,28 @@ export default function MaintenancePage() {
             transition={{ delay: 3, duration: 0.8 }}
           >
             <motion.a
-              href="https://github.com"
+              href="https://github.com/Franjoo"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-current hover:text-white transition-colors duration-300"
+              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               <Github className="w-5 h-5" />
             </motion.a>
             <motion.a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/franz-benthin/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-current hover:text-white transition-colors duration-300"
+              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               <Linkedin className="w-5 h-5" />
             </motion.a>
             <motion.a
-              href="mailto:your.email@example.com"
-              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-current hover:text-white transition-colors duration-300"
+              href="mailto:hi@franz.cx"
+              className="w-12 h-12 border-2 border-current flex items-center justify-center hover:bg-black hover:border-white hover:text-white transition-colors duration-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -378,7 +295,7 @@ export default function MaintenancePage() {
             animate={{ opacity: 0.3 }}
             transition={{ delay: 3.5, duration: 0.8 }}
           >
-            ESTIMATED LAUNCH · Q1 2025
+            ESTIMATED LAUNCH · Q1 2026
           </motion.div>
         </div>
       </div>
