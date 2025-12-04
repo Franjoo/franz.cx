@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Square, Circle, Triangle, Music, CheckCircle } from 'lucide-react';
+import { Square, Circle, Triangle, CheckCircle, Zap, Shirt, Globe, Headphones, Target } from 'lucide-react';
 
 // Geometric shapes animation
 function GeometricBackground() {
@@ -87,18 +87,18 @@ function GeometricBackground() {
   );
 }
 
-// Feature card component
+// Feature card component with detailed description
 function FeatureCard({ icon, text, delay }: { icon: React.ReactNode; text: string; delay: number }) {
   return (
     <motion.div
-      className="flex items-center gap-3 text-lg"
+      className="flex items-start gap-4 text-lg"
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.6 }}
     >
-      <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-      <span className="tracking-wide">{text}</span>
+      <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">{icon}</div>
+      <p className="leading-relaxed">{text}</p>
     </motion.div>
   );
 }
@@ -179,16 +179,13 @@ export default function FlonkLanding() {
 
           {/* Tagline */}
           <motion.p
-            className="text-2xl md:text-4xl font-bold tracking-tight max-w-3xl mx-auto"
+            className="text-lg md:text-2xl leading-relaxed max-w-3xl mx-auto opacity-80"
             initial={{ opacity: 0, y: 20 }}
             animate={animateTitle ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Colourful fast-paced arcade game
-            <br />
-            <span className="text-lg md:text-2xl font-normal opacity-70">
-              Easy to learn but hard to master
-            </span>
+            FLONK is a colourful fast-paced arcade game with one-tap controls and random generated levels.
+            Easy to learn but hard to master – do not overestimate yourself – it's all about reaching the throne..
           </motion.p>
 
           {/* CTA */}
@@ -222,9 +219,9 @@ export default function FlonkLanding() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Awesome Features Section */}
       <section className="relative z-10 px-8 py-32 bg-black text-white">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             className="text-5xl md:text-7xl font-black tracking-tighter mb-16 text-center"
             initial={{ opacity: 0, y: 20 }}
@@ -232,33 +229,76 @@ export default function FlonkLanding() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            FEATURES
+            AWESOME FEATURES
           </motion.h2>
 
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div className="space-y-8 max-w-3xl mx-auto">
             <FeatureCard
               icon={<Square className="w-6 h-6" />}
-              text="Random generated levels"
+              text="Jump into a set of unique game mechanics!"
               delay={0}
             />
             <FeatureCard
               icon={<Circle className="w-6 h-6" />}
-              text="Various player skins"
+              text="Beautiful, randomly generated and increasingly complex levels are waiting to be reached!"
               delay={0.1}
             />
             <FeatureCard
               icon={<Triangle className="w-6 h-6" />}
-              text="Beautiful color patterns"
+              text="You will soon learn that a sharp eye, a little patience and good reflexes are more than needed!"
               delay={0.2}
             />
             <FeatureCard
-              icon={<Music className="w-6 h-6" />}
-              text="Unique soundtrack"
+              icon={<Target className="w-6 h-6" />}
+              text="Gather a bunch of coins and other useful things on your journey upwards to the throne!"
               delay={0.3}
             />
             <FeatureCard
               icon={<CheckCircle className="w-6 h-6" />}
-              text="Lots of challenges"
+              text="You will die.. often die.. And start again! Be warned, this game is addictive!"
+              delay={0.4}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* More Features Section */}
+      <section className="relative z-10 px-8 py-32 bg-white text-black">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2
+            className="text-5xl md:text-7xl font-black tracking-tighter mb-16 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            MORE FEATURES!
+          </motion.h2>
+
+          <div className="space-y-8 max-w-3xl mx-auto">
+            <FeatureCard
+              icon={<Zap className="w-6 h-6" />}
+              text="Invest your hard-earned coins in 'Glitches', which permanently equip you with special abilities!"
+              delay={0}
+            />
+            <FeatureCard
+              icon={<Shirt className="w-6 h-6" />}
+              text="With new skins you can create a unique look for your awesome character!"
+              delay={0.1}
+            />
+            <FeatureCard
+              icon={<Globe className="w-6 h-6" />}
+              text="FLONK is made for everyone and therefore available in 9 languages."
+              delay={0.2}
+            />
+            <FeatureCard
+              icon={<Headphones className="w-6 h-6" />}
+              text="Let the unique soundtrack mesmerize you – be sure, it won't let you go that easily!"
+              delay={0.3}
+            />
+            <FeatureCard
+              icon={<Target className="w-6 h-6" />}
+              text="Haven't you had enough? Try the challenges! They will demand everything from you!"
               delay={0.4}
             />
           </div>

@@ -51,6 +51,7 @@ export default function Privacy() {
               <li>Profile information (avatar, display name)</li>
               <li>User-generated content (game settings, preferences)</li>
               <li>Communication data (support requests, feedback)</li>
+              <li>Purchase information (in-app purchase history, transaction IDs - payment details are processed by Apple/Google and not stored by us)</li>
             </ul>
 
             <h3 className="text-xl font-bold mb-2 mt-6">1.2 Automatically Collected Information</h3>
