@@ -1,7 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Mail, Github, Linkedin, ExternalLink, Calendar, Code2, Users } from 'lucide-react';
 import MaintenancePage from './components/MaintenancePage';
+
+// Lazy load project modules for optimal performance
+const FlonkProject = lazy(() => import('./pages/flonk/FlonkProject'));
 
 // ========== TYPES ==========
 interface Project {
@@ -749,11 +753,14 @@ function Footer() {
 
 // ========== MAIN APP ==========
 function App() {
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [isDark, setIsDark] = useState(false);
 
   // Check if maintenance mode is enabled
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
+  // Check if we're on a project page (bypass maintenance mode)
+  const isProjectPage = location.pathname.startsWith('/p/');
 
   useEffect(() => {
     document.documentElement.style.setProperty('--bg', isDark ? '#000000' : '#FFFFFF');
@@ -762,11 +769,29 @@ function App() {
     document.body.style.color = isDark ? '#FFFFFF' : '#000000';
   }, [isDark]);
 
-  // Show maintenance page if enabled
-  if (isMaintenanceMode) {
+  // Show maintenance page for main site if enabled (but not for project pages)
+  if (isMaintenanceMode && !isProjectPage) {
     return <MaintenancePage />;
   }
 
+  // Render project pages with lazy loading
+  if (isProjectPage) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="text-2xl font-bold tracking-tighter">Loading...</div>
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/p/flonk/*" element={<FlonkProject />} />
+        </Routes>
+      </Suspense>
+    );
+  }
+
+  // Render main portfolio site
   return (
     <>
       <AnimatePresence>
